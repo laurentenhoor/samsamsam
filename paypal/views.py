@@ -33,6 +33,9 @@ UNDER_CONSTRUCTION = False
 ADMIN = ['henknozemans@outlook.com', 'info@samsamsam.nl'] #
 
 
+
+
+
 # REST API
 # paypalrestsdk.configure({
 #       "mode": "sandbox",
