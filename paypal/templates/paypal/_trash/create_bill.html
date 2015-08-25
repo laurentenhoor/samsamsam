@@ -1,0 +1,57 @@
+<html>
+<head>
+
+<script src="https://www.paypalobjects.com/js/external/apdg.js" type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<meta name="viewport" content="width=device-width">
+</head>
+
+<body>
+
+{{ bill.description }} {{ bill.amount}}
+
+{% for transaction in bill.transaction_set.all %}
+<div>
+	{{ transaction.user.email }} {{ transaction.amount }}
+</div>
+{% endfor %}
+
+<form action="https://www.sandbox.paypal.com/webapps/adaptivepayment/flow/pay" target="PPDGFrame" class="standard">
+	<label for="buy">Bevestig uw SAMSAMSAM met de transactiekosten</label>
+	<input type="image" id="submitBtn" value="Pay with PayPal" src="https://www.paypalobjects.com/en_US/i/btn/btn_paynowCC_LG.gif">
+	<input id="type" type="hidden" name="expType" value="mini">
+	<input id="paykey" type="hidden" name="paykey" value="{{ bill.paykey }}">
+</form>
+
+	<br><br>
+		<a href="{% url 'paypal:seamless' %}">Seamless payment (test)</a>
+
+<script type="text/javascript" charset="utf-8">
+
+	function returnFromPayPal(msg) {
+		console.log(msg)
+		console.log('Calback of paypal payment');
+		
+		$.ajax({
+		  url: '{% url "paypal:status" %}{{bill.paykey}}',
+		  success: function(response) {
+		  	console.log(response)
+		  	if (response == 'COMPLETED') {
+		  		window.location = '{% url "paypal:overview" %}';
+		  	}
+		  	
+		  }
+		});
+		
+	}
+	
+	var dgFlowMini = new PAYPAL.apps.DGFlowMini({trigger: 'submitBtn', callbackFunction: 'returnFromPayPal'});
+
+</script>
+
+{{payKey}}
+
+</body>
+
+</html>

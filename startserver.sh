@@ -1,0 +1,1 @@
+while true; do python manage.py runserver 0.0.0.0:8080; sleep 2; done

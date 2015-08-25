@@ -1,0 +1,15 @@
+<span id="loginContainer"></span>
+<script src="https://www.paypalobjects.com/js/external/api.js"></script>
+
+<script>
+	paypal.use( ["login"], function(login) {
+	  login.render ({
+	    "appid": "AfOXYhDKDLORvA-9AjyHFi3Vc2wybslr0sYBBk7tzw-9wfaoS-UBTdQFEb5c",
+	    "authend": "sandbox",
+	    "scopes": "email",
+	    "containerid": "loginContainer",
+	    "locale": "en-us",
+	    "returnurl": "http://beta.samsamsam.nl/login_return"
+	  });
+	});
+</script>

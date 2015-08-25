@@ -1,0 +1,158 @@
+html, body {
+	margin:0;
+	font-family: roboto !important;
+	color: #444 !important;
+	font-size: 1em;
+	-webkit-font-smoothing: antialiased;
+	max-width: 100%;
+    overflow-x: hidden;
+	
+}
+
+.nav-tabs > li > a {
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	border-radius: 0;
+
+}
+
+.font {
+	font-family: roboto !important;
+	
+}
+
+.active-field {
+    background-color: white !important; /*fallback color*/
+    border-color: #ddd !important;
+    background-image: url(green.png);
+    background-size: 100% 100%; /*your percentage is the first one (width), second one (100%) is for height*/
+    background-repeat: no-repeat; 
+	color:white !important;
+    text-shadow:
+    -1px -1px 0 #579679,
+
+    1px -1px 0 #579679,
+
+    -1px 1px 0 #579679,
+
+    1px 1px 0 #579679;  
+
+
+	
+}
+
+.btn-primary {
+	background-color: #579679 !important;
+	border-color: #579679 !important;
+}
+
+.glyphicon-ok {
+	color:  #579679 !important;
+}
+
+.bottom-buttons {
+	margin-top : 30px;
+}
+
+img.logo {
+	width:150px;
+	margin:8px;
+}
+
+.progress-bar-success {
+  background-color: #579679 !important;
+}
+
+.btn-default {
+	background-color:#F4F4F4 !important;
+}
+
+.link{
+	cursor:pointer;
+}
+
+.open-bill {
+	margin-bottom:40px !important;
+}
+
+h1 {
+	font-weight:normal !important;
+	color: #579679 !important;
+	font-size: 1.5em !important;
+	margin-bottom: 30px !important;
+}
+#btn-submit {
+	background-color:#0C4B33;
+	color:white;
+	margin-bottom:40px;
+}
+
+.modal-header {
+	color:white !important;
+	font-size:1.5em;
+
+}
+
+#add_user_field {
+	margin-bottom:10px;
+}
+
+#header {
+	box-shadow: 0 1px 5px 2px rgba(0,0,0,.20);
+	
+}
+
+#header, .modal-header {	
+	padding:10px;
+	background-color: #0C4B33;
+	
+	
+}
+#content {
+	padding:15px;
+}
+
+
+
+.hidden {
+	display:none;
+}
+
+.amount_indication, .delete_indication {
+	float:right;
+
+}
+.delete_indication{
+		padding-left:20px;
+	padding-right:10px;
+}
+
+
+
+
+@keyframes flickerAnimation {
+  0%   { opacity:0.6; }
+  50%  { opacity:0.4; }
+  100% { opacity:0.6; }
+}
+@-o-keyframes flickerAnimation{
+  0%   { opacity:0.6; }
+  50%  { opacity:0.4; }
+  100% { opacity:0.6; }
+}
+@-moz-keyframes flickerAnimation{
+  0%   { opacity:0.6; }
+  50%  { opacity:0.4; }
+  100% { opacity:0.6; }
+}
+@-webkit-keyframes flickerAnimation{
+  0%   { opacity:0.6; }
+  50%  { opacity:0.4; }
+  100% { opacity:0.6; }
+}
+.blockOverlay {
+   -webkit-animation: flickerAnimation 2s infinite !important;
+   -moz-animation: flickerAnimation 2s infinite !important;
+   -o-animation: flickerAnimation 2s infinite !important;
+    animation: flickerAnimation 2s infinite !important;
+}

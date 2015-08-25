@@ -1,0 +1,77 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="nl">
+
+	<head>
+	
+		<title>Samsamsam</title>
+		
+		<meta charset="utf-8">
+		
+		<link rel="shortcut icon" href="{% static "paypal/favicon.png" %}" />
+		
+		<meta name="keywords" content="kosten spreiden, kosten delen, samsamsam, samsam, wiebetaaltwat">
+		
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		
+		<link href='http://fonts.googleapis.com/css?family=Roboto:500,900italic,900,400italic,100,700italic,300,700,500italic,100italic,300italic,400' rel='stylesheet' type='text/css'>
+		
+		<link rel="stylesheet" type="text/css" href="{% static "paypal/main.css" %}">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		
+		{% block js %}
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+			<script src="https://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+	    	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+			
+			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+			<script src="{% static "paypal/js/validator.js" %}"></script>
+			<script src="{% static "paypal/js/jquery.blockUI.js" %}"></script>
+			<script src="{% static "paypal/js/spin.min.js" %}"></script>
+			<script>
+				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+				(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+				m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+				ga('create', 'UA-65529859-1', 'auto');
+				ga('send', 'pageview');
+			</script>
+			<script src="{% static "paypal/js/fastclick.js" %}"></script>
+			<script>
+				$(function() {
+				    FastClick.attach(document.body);
+				});
+			</script>
+		{% endblock %}
+
+	</head>
+
+	<body>
+	
+		<div id="header" class="">
+			<div class="container">
+				<div class="row">
+					<img class="logo" src="{% static "paypal/samsamsam_logo.png" %}" alt="Samsamsam Logo"/>
+				</div>
+			</div>
+		</div>
+			
+	
+		<div id="content" class="container">
+			<div class="row">
+				<div class="col-xs-12 col-sm-6 col-lg-5">
+					
+					{% block content %}
+					{% endblock %}
+						
+				</div>
+			</div>
+		</div>
+	
+	</body>
+
+</html>

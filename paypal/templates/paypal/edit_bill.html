@@ -1,0 +1,326 @@
+{% extends "paypal/base.html" %}
+
+{% block content %}
+	
+<h1>{% if bill %}Rekening wijzigen{% else %}Nieuwe rekening{% endif %}</h1>
+	
+{#	action="" #}
+	
+<form role="form" data-toggle="validator" id="submit-form" action="{% if bill %}{% url "paypal:save_bill" bill.pk %}{% else %}{% url "paypal:save_bill" %}{% endif %}" method="post" >
+	{% csrf_token %}
+	
+<div class="form-group">
+  <label>Wat?</label>
+  <input id="description" value="{% if bill %}{{bill.description}}{% endif %}" autocomplete="off" name="description" type="text" class="form-control" placeholder="Omschrijving" required>
+</div>
+<div class="form-group">
+  <label for="pwd">Bedrag?</label>
+  <input type="number" data-error="" min="0.01" value="{% if bill %}{{bill.amount}}{% endif %}" autocomplete="off" step="0.01" class="form-control" id="amount" name="amount" placeholder="0.00" required>
+</div>
+
+<div class="form-group">
+  <label for="pwd">Voeg emailadres toe:</label>
+	<input type="email" autocomplete="off" class="form-control add_user" id="add_user_field" placeholder="Emailadres toevoegen">
+	<a type="button" formaction="" class="btn btn-block add_user btn-default hidden donotblockscreen" id="add_user_button">Contactpersoon toevoegen</a>
+</div>
+	<nolink>
+
+	<div id="hide-without-contacts">
+			<label>Selecteer contacten:</label>
+			<div class="list-group">
+			{%if me_active %}
+				<a class="list-group-item active-field" data-percentage="100"><span class="email nolink"><input name="email_list" class="email" value="{{me}}" hidden />Ikzelf</span><input name="amount_list" class="amount" value="0.00" hidden /><span class="amount_indication">0.00</span></a>
+				<script>
+					$(window).load(function() { $('.active-field').slider('option', 'disabled', false);})
+				</script>
+			{% else %}
+				<a class="list-group-item" data-percentage="100"><span class="email nolink"><input name="" class="email" value="{{me}}" hidden />Ik ({{me}})</span><input name="" class="amount" value="0.00" hidden /><span class="amount_indication hidden">0.00</span></a>
+			{% endif %}
+	</div>
+	<div class="list-group lijstje">
+	{% for email in transaction_emails %}
+	  {%if email%}
+	       <a class="list-group-item link active-field" data-percentage="100"><span class="email nolink"><input name="email_list" class="email" value="{{email}}" hidden />{{email}}</span><span class="delete_indication hidden">X</span><input name="amount_list" class="amount" value="0.00" hidden /><span class="amount_indication">0.00</span></a>
+	  {% endif %}
+	{% endfor %}
+	
+	{% for email in other_emails %}
+	  {%if email%}
+	       <a class="list-group-item link email" data-percentage="100"><span class="email nolink"><input name="" class="email" value="{{email}}" hidden />{{email}}</span><span class="delete_indication">X</span><input name="" class="amount" value="0.00" hidden /><span class="amount_indication hidden">0.00</span></a>
+	  {% endif %}
+	{% endfor %}
+	
+
+	</div>
+	
+	
+	</nolink>
+<div class="form-group">
+  <label for="pwd">Samsamsam!</label>
+<input id="btn-submit" type="submit" class="btn btn-block donotblockscreen" value="Opslaan">	
+	</div>
+{#<input type="submit"  />#}
+	</div>
+	</form>
+		<hr>
+		<div class="btn-group btn-group-justified bottom-buttons" >
+				<a class="btn btn-default" href="{% url 'paypal:overview' %}">Overzicht</a>
+				<a class="btn btn-default" href="{% url 'paypal:logout' %}">Uitloggen</a>
+			</div><br>
+				<span style="float:right">Ingelogd als {{ request.session.email }}</span>
+	
+{#		<br><a href="{% url 'paypal:overview' %}">Overzichtspagina</a>#}
+
+
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                Contactpersoon verwijderen
+            </div>
+            <div class="modal-body">
+                Weet je zeker dat je <strong><span id="contact-name"></span></strong> wilt verwijderen?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default donotblockscreen" data-dismiss="modal">Annuleer</button>
+                <a id="btn-approve-delete" class="btn btn-danger btn-ok donotblockscreen">Verwijder</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+
+$(document).ready(function() {
+	$(window).keydown(function(event){
+	    if(event.keyCode == 13) {
+	      event.preventDefault();
+	      return false;
+	    }
+	  });
+
+	function calculateSpread() {
+		var sum = 0;
+		$('.list-group-item.active-field').each(function(){
+		    sum = sum + parseInt($(this).attr('data-percentage'));
+		});
+		$('.list-group-item.active-field').each(function(){
+			var amount = ($("#amount").val()*parseInt($(this).attr('data-percentage'))/sum).toFixed(2);
+		    $(this).find('.amount_indication').html('&euro; '+ amount);
+		    
+		    $(this).find('.amount').attr('value', amount)
+		});
+	}
+	
+	$('#amount').keyup(function() {
+		calculateSpread();
+	})
+	
+	$('#add_user_field').keyup(function() {
+		if ($(this).val()) {
+			$('#add_user_button').removeClass('hidden')
+		} else {
+			$('#add_user_button').addClass('hidden')
+		}
+		
+			
+	})
+	
+	$("#add_user_field").keyup(function (e) {
+	    if (e.keyCode == 13) {
+	        $('#add_user_button').trigger('click');
+	    }
+	});
+	
+	
+	$(document).on('click touchend', '.delete_indication', function(e) {	
+		
+		if (dragging)
+			return;
+		
+		e.stopPropagation();
+		e.preventDefault();
+		
+		$clicked_item = $(this).parent();
+		email = $(this).parent().find('.email').text();
+		
+		$('#contact-name').text(email);
+		$('#confirm-delete').modal('show');
+		
+		$(document).on('click', '#btn-approve-delete', function(e) {
+			e.stopPropagation();e.preventDefault();
+			
+			$clicked_item.remove()
+			$('#add_user_field').val('')
+			calculateSpread();
+			
+			checkIfContacts()
+			
+			$.ajax({
+		        "type": "GET",
+		        "dataType": "json",
+		        "url": "{% url "paypal:user" %}delete/"+email,
+		        "success": function(result) {
+		            console.log(result);
+		            
+		        }
+		    });
+			
+			$('#confirm-delete').modal('hide') 
+			
+		});	
+	})
+	
+	
+	checkIfContacts()
+	
+	function checkIfContacts() {
+		$('#hide-without-contacts').show()
+		if ($('.list-group-item').length > 1) {
+			$('#hide-without-contacts').show()
+		} else {
+			$('#hide-without-contacts').hide();
+		}
+	
+	}
+	
+	$(document).on('click', '#add_user_button', function(e) {
+		e.stopPropagation();e.preventDefault();
+		
+		checkIfContacts()
+		
+		if ($('#add_user_field').val().length > 3) {
+			var email = $('#add_user_field').val()
+			$.blockUI({ message: null });
+			$.ajax({
+		        "type": "GET",
+		        "dataType": "json",
+		        "url": "{% url "paypal:user" %}"+email,
+		        "success": function(result) {
+		        
+		            console.log(result);
+		            $.unblockUI();
+		            $('#add_user_field').val('')
+		            $('#hide-without-contacts').show()
+		            $('.lijstje').prepend('<a class="list-group-item link active-field" data-percentage="100"><span class="email nolink"><input name="email_list" class="email" value="'+email+'" hidden />'+email+'</span><span class="delete_indication hidden">X</span><input name="amount_list" class="amount" value="0.00" hidden /><span class="amount_indication">0.00</span></a>')
+					
+					initSliders();
+					$('.active-field').slider('option', 'disabled', false);
+					calculateSpread();
+					
+		        },
+		        "complete" : function() {$.unblockUI(); },
+		        "error" : function() {$.unblockUI();alert('This contact already exists!')}
+		    })
+
+		}
+	});
+	
+	function initSliders() {
+		$('.list-group-item').slider({
+			  slide: function( event, ui ) {
+				  	$(event.target).addClass('active-field')
+				  	$(event.target).attr('data-percentage', ui.value)
+				  	refreshSliders();  	
+				  	calculateSpread();
+			  },
+			  change : function( event, ui) {
+			  		
+				  	if ($(event.target).attr('data-percentage') < 5) {
+				  		$(event.target).removeClass('active-field');
+				  		$(event.target).slider('option', 'disabled', true);
+				  		$(event.target).attr('data-percentage', '100')
+				  		$(event.target).css('background-size', '100% 100%');
+				  		$(event.target).find('.amount_indication').toggleClass('hidden');
+						$(event.target).find('.delete_indication').toggleClass('hidden');
+						$(event.target).find('input.email').attr('name', '');
+						$(event.target).find('input.amount').attr('name', '');
+				  	}
+				  	calculateSpread();
+				  	
+			  }, 
+			  disabled : 'true'
+		});
+	}
+	
+	var dragging = false;
+		
+		$("body").on("touchmove", function(){
+	      	dragging = true;
+		});
+		
+		$("body").on("touchstart", function(){
+		    dragging = false;
+		});
+		
+		function refreshSliders() {
+			$.each($('.list-group-item'), function(index, item) {
+		  		$(item).css('background-size', '' + $(item).attr('data-percentage') + '% 100%')
+		  	})
+		}
+	
+	 	initSliders();
+		
+		$(document).on('click touchend', '.email', function(e, i) {
+		    e.preventDefault();
+			e.stopPropagation();
+			$elem = $(this).parent('.list-group-item')
+			$elem.trigger('click');
+		})
+				
+			
+		$(document).on('click touchend', '.list-group-item', function(e, i) {
+	
+			if (dragging || $(e.target).hasClass('active-field'))
+	         	return;
+	          
+	        e.preventDefault();
+			e.stopPropagation();
+			
+			$('#description').blur();
+			$('#amount').blur();
+			
+			$(e.target).slider('option', 'disabled', false)
+			
+			$(this).toggleClass('active-field');
+				$(this).find('.amount_indication').toggleClass('hidden');
+				$(this).find('.delete_indication').toggleClass('hidden');
+				
+				$email_list_input = $(this).find('input.email')
+				$amount_list_input = $(this).find('input.amount')
+				if ($email_list_input.attr('name') == "email_list") {
+					$email_list_input.attr('name', '');
+					$amount_list_input.attr('name', '');
+				} else {  
+					$email_list_input.attr('name', 'email_list');
+					$amount_list_input.attr('name', 'amount_list');
+				}
+				calculateSpread();
+		});
+	
+
+       calculateSpread();
+       
+       $('#submit-form').validator()
+      
+     
+     $("#submit-form").submit(function () { 
+ 		if (!$("#btn-submit").hasClass('disabled')) {
+			loading();
+ 		}
+		
+	});
+	
+	$(".btn").click(function () {
+		if (!$(this).hasClass('donotblockscreen')) {
+			loading();
+		}
+	});
+
+});
+
+</script>
+
+{% endblock %}
