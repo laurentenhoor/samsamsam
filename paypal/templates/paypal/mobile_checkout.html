@@ -1,0 +1,47 @@
+{% extends 'paypal/base.html' %}
+
+{% block js %}
+	{{ block.super }}
+	<script src="http://www.paypalobjects.com/js/external/apdg.js"></script>
+{% endblock %}
+
+
+{% block content %}
+
+<a id="payPalRedirect" href="https://www.paypal.com/webapps/adaptivepayment/flow/pay?paykey={{paykey}}&expType=mini" target="_blank">Complete PayPal Payment</a>
+<br /><br />
+<div id="resultDiv"></div>
+
+<script>
+	
+	 var returnFromPayPal = function () {
+		   alert("Returned from PayPal");
+		   var div = document.getElementById('resultDiv');
+		   div.innerHTML = "Returned from PayPal!";
+		   // Here you would need to pass on the payKey to your server side handle to call the PaymentDetails API to make sure Payment has been successful or not
+	       // based on the payment status- redirect to your success or cancel/failed urls
+	}
+	var dgFlowMini = new PAYPAL.apps.DGFlowMini({ trigger: 'payPalRedirect', expType: 'mini', callbackFunction: 'returnFromPayPal' });
+</script>
+
+
+{#<form id="form-checkout" action="https://www.paypal.com/webapps/adaptivepayment/flow/pay" target="PPDGFrame">#}
+{#	<input id="type" type="hidden" name="expType" value="light">#}
+{#	<input id="paykey" type="hidden" name="paykey" value="{{paykey}}">#}
+{#	<input type="submit" id="submitBtn" value="Klik hier als popups geblokkeerd zijn"> #}
+{#</form>#}
+
+<script src="http://www.paypalobjects.com/js/external/apdg.js"></script>
+<script>
+
+var dgFlow = new PAYPAL.apps.DGFlow();
+{#dgFlow.startFlow("https://www.paypal.com/webapps/adaptivepayment/flow/pay?paykey={{paykey}}")#}
+
+
+{#$(window).load(function() {#}
+{#	$('#submitBtn').trigger('click');#}{#);#}
+
+</script>
+
+
+{% endblock %}

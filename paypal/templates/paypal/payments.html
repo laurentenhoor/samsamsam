@@ -1,0 +1,103 @@
+{% extends 'paypal/base.html' %}
+
+{% block content %}
+
+{% if not unconfirmed_bills and not confirmed_bills %}
+	<h1>Je hebt nog geen rekeningen ontvangen.</h1>
+{% endif %}
+
+
+{% if confirmed_bills %}
+
+	<h1>Betalen</h1>
+		
+		{% for bill in confirmed_bills %}		
+		<div class="form-group open-bill">
+		  
+			<div style="margin-bottom:10px;">
+				<label>{{bill}}</label>
+				<span style="float:right;">&euro; {{bill.sum |floatformat:"2" }} van <strong>&euro; {{bill.amount}}</strong></span>
+			</div>
+		  
+		 	<div class="progress">
+			  <div class="progress-bar progress-bar{% if bill.percentage < 100 %}-striped{% endif %}  progress-bar-success {% if bill.percentage < 100 %}active{% endif %}" role="progressbar"
+			  aria-valuenow="{{bill.percentage}}" aria-valuemin="0" aria-valuemax="100" style="width:{{bill.percentage}}%">
+			    {% if bill.percentage > 3 %}{{ bill.percentage | floatformat:"0" }}%{% endif %}
+			  </div>
+			</div>
+		  	
+	  		<div class="">
+				{% for transaction in bill.transaction_set.all %}
+					<p><span style="float:right;" class="{% if transaction.status == 'Paid' %}glyphicon glyphicon-ok{% else %}glyphicon glyphicon-remove{% endif %}"><span class="font"> &euro; {{transaction.amount}}</span></span>{{transaction.user}}</p>
+				{% endfor %}
+			</div>
+		  	
+			{% if bill.percentage < 100 and bill.reminder_date_difference > 86400 %}
+				<div class="btn-group btn-group-justified bottom-buttons" >
+					<a class="btn btn-default" href="{% url 'paypal:reminder' bill.pk %}">Herinner wanbetalers!</a>
+				</div>
+			{% endif %}
+		<hr>
+		</div>
+		
+		{% endfor %}
+{% endif %}
+
+
+{#	<h1>Openstaande betalingen</h1>#}
+{#<hr>#}
+
+<div class="btn-group btn-group-justified bottom-buttons" >
+	<a class="btn btn-default" href="{% url 'paypal:input_bill' %}">Nieuwe rekening</a>
+	<a class="btn btn-default" href="{% url 'paypal:logout' %}">Uitloggen</a>
+</div>
+
+<br>
+<span style="float:right">Ingelogd als {{ request.session.email }}</span>
+
+
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                Rekening verwijderen
+            </div>
+            <div class="modal-body">
+                Weet je zeker dat je <strong><span id="bill-name"></span></strong> wilt verwijderen?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default donotblockscreen" data-dismiss="modal">Annuleer</button>
+                <a id="btn-approve-delete" class="btn btn-danger btn-ok donotblockscreen">Verwijder</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+	
+	$(document).ready(function() {
+		
+		$('.delete-btn').click(function() {	
+			$('#bill-name').text($(this).data('name'));
+			$('#btn-approve-delete').attr("href", $(this).data('link'));
+			$('#confirm-delete').modal('show');
+		});
+		
+		$('#btn-approve-delete').click(function() {	
+			$('#confirm-delete').modal('hide');
+			loading();
+		});
+			
+		$(".btn").click(function () {
+			if (!$(this).hasClass('donotblockscreen')) {
+				loading();
+			}
+		});
+		
+	})
+	
+</script>
+
+{% endblock %}
+
