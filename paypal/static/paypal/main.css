@@ -1,12 +1,101 @@
 html, body {
+	height:100%;  /* new */
+	width:100%;
 	margin:0;
 	font-family: roboto !important;
 	color: #444 !important;
 	font-size: 1em;
 	-webkit-font-smoothing: antialiased;
+	
+	
+	
+	
 	max-width: 100%;
     overflow-x: hidden;
+    overflow-y: auto;
+  	-webkit-overflow-scrolling: touch;
+    
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+input, a {
+/* 	border-radius:0px !important; */
+}
+
+#logout-btn-container {
+	text-align:right;
+	margin-top: -12px; 
+}
+
+#logout-btn {
+	color: #579679;
+	color: grey;
+/* 	float: right; */
+	font-size: 10px;
+/* 	margin-top: 25px; */
+	text-decoration: none !important;
+}
+
+#navigation-content {
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top:14px;
+	text-align:center;
+}
+
+
+.nav a {
+	color:white;
+	text-align:center;
+}
+.nav {
+	text-align:center;
+	vertical-align:middle;
+	padding-top:10px;
+}
+
+#navigation {
+	color:white !important;
+    
+    list-style: none;
+    margin: 0;
+    
+    height:60px;
+    text-align: left;
+    
+    position: fixed;   /* new */
+    bottom: -5px;  /* new */
+    width: 100%;  /* new */
+    
+    box-shadow: 0 -1px 5px 2px rgba(0,0,0,.20);
+	background-color:#579679;
 	
+}
+
+#navigation a {
+	font-size:18px;
+	color:white;
+	padding:20px;
+	font-weight:normal !important;
+	margin-top:0px;
+	text-decoration: none;
+	
+}
+
+#navigation li {
+    display: inline;
+    margin-right: .75em;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+#navigation li.last {
+    margin-right: 0;
 }
 
 .nav-tabs > li > a {
@@ -17,28 +106,30 @@ html, body {
 }
 
 .font {
-	font-family: roboto !important;
-	
+	font-family: roboto !important;	
 }
 
 .active-field {
-    background-color: white !important; /*fallback color*/
+	
+    background-color: lightgrey !important; /*fallback color*/
     border-color: #ddd !important;
     background-image: url(green.png);
     background-size: 100% 100%; /*your percentage is the first one (width), second one (100%) is for height*/
     background-repeat: no-repeat; 
-	color:white !important;
-    text-shadow:
-    -1px -1px 0 #579679,
-
-    1px -1px 0 #579679,
-
-    -1px 1px 0 #579679,
-
-    1px 1px 0 #579679;  
-
-
 	
+	color:white !important;
+    
+/*     text-shadow: */
+/*     -1px -1px 0.2px #579679, */
+/*     1px -1px 0.2px #579679, */
+/*     -1px 1px 0.2px #579679, */
+/*     1px 1px 0.2px #579679; */
+    
+/*     text-shadow:  */
+/*     5px 5px 10px #579679, */
+/*     -5px -5px 10px #579679, */
+/*     5px -5px 10px #579679, */
+/*     -5px 5px 10px #579679; */
 }
 
 .btn-primary {
@@ -99,17 +190,24 @@ h1 {
 
 #header {
 	box-shadow: 0 1px 5px 2px rgba(0,0,0,.20);
-	
 }
 
 #header, .modal-header {	
 	padding:10px;
 	background-color: #0C4B33;
-	
+}
+#menu {
+	position:relative;
+	z-index:-1;
+	box-shadow: 0 1px 5px 2px rgba(0,0,0,.20);
+
+	height:45px;
+	background-color:#579679;
 	
 }
 #content {
 	padding:15px;
+	margin-bottom: 30px;
 }
 
 

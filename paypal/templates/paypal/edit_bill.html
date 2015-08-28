@@ -62,12 +62,12 @@
 {#<input type="submit"  />#}
 	</div>
 	</form>
-		<hr>
-		<div class="btn-group btn-group-justified bottom-buttons" >
-				<a class="btn btn-default" href="{% url 'paypal:overview' %}">Overzicht</a>
-				<a class="btn btn-default" href="{% url 'paypal:logout' %}">Uitloggen</a>
-			</div><br>
-				<span style="float:right">Ingelogd als {{ request.session.email }}</span>
+{#		<hr>#}
+{#		<div class="btn-group btn-group-justified bottom-buttons" >#}
+{#				<a class="btn btn-default" href="{% url 'paypal:overview' %}">Overzicht</a>#}
+{#				<a class="btn btn-default" href="{% url 'paypal:logout' %}">Uitloggen</a>#}
+{#			</div><br>#}
+{#				<span style="float:right">Ingelogd als {{ request.session.email }}</span>#}
 	
 {#		<br><a href="{% url 'paypal:overview' %}">Overzichtspagina</a>#}
 
@@ -275,7 +275,7 @@ $(document).ready(function() {
 	
 			if (dragging || $(e.target).hasClass('active-field'))
 	         	return;
-	          
+	       
 	        e.preventDefault();
 			e.stopPropagation();
 			

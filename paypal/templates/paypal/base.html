@@ -19,7 +19,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 		
 		<link href='http://fonts.googleapis.com/css?family=Roboto:500,900italic,900,400italic,100,700italic,300,700,500italic,100italic,300italic,400' rel='stylesheet' type='text/css'>
-		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="{% static "paypal/main.css" %}">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 		
@@ -55,23 +55,68 @@
 		<div id="header" class="">
 			<div class="container">
 				<div class="row">
-					<img class="logo" src="{% static "paypal/samsamsam_logo.png" %}" alt="Samsamsam Logo"/>
+					<div class="col-xs-12 col-sm-6 col-lg-4">
+						<img class="logo" src="{% static "paypal/samsamsam_logo.png" %}" alt="Samsamsam Logo"/>
+						
+					</div>
 				</div>
 			</div>
 		</div>
-			
-	
+		
+{#		<div id="menu" class="">#}
+{#			<div class="container" >#}
+{#				<div class="row" >#}
+{#					<div id=""  class="nav col-xs-12 col-sm-6 col-lg-5">#}
+	             	
+{#		                <a title="1" href="{% url 'paypal:overview' %}" ><i class="fa fa-money smaller-icon"></i>&nbsp;<i class="fa fa-sign-in"></i></a>&nbsp;&nbsp;#}
+{#		                <a title="2" href="{% url 'paypal:input_bill' %}" ><i class="fa fa-plus"></i></a>&nbsp;&nbsp;#}
+{#		                <a title="3" href="#" ><i class="fa fa-sign-out"></i>&nbsp;<i class="fa fa-money smaller-icon"></i></a>#}
+	 
+{#					</div>#}
+{#				</div>#}
+{#			</div>#}
+{#		</div>#}
+
 		<div id="content" class="container">
 			<div class="row">
-				<div class="col-xs-12 col-sm-6 col-lg-5">
-					
+				<div class="col-xs-12 col-sm-6 col-lg-4">
+					<div id="logout-btn-container"><a id="logout-btn" class="loading-action" href="{% url 'paypal:logout' %}"><i class="fa fa-sign-out"></i> {{ request.session.email }}</a></div>
 					{% block content %}
+					
 					{% endblock %}
-						
+					
 				</div>
 			</div>
 		</div>
 	
+		 <div id="navigation">
+		 	<div class="container">
+              <div class="row">
+					<div id="navigation-content"  class="col-xs-12 col-sm-6 col-lg-4">
+	             	
+		                <a title="menu-inbox" class="loading-action" href="{% url 'paypal:overview' %}" ><i class="fa fa-money"></i> In</a>&nbsp;&nbsp;
+		                <a title="menu-new" class="loading-action" href="{% url 'paypal:input_bill' %}" ><i class="fa fa-plus"></i> Nieuw</a>&nbsp;&nbsp;
+		                <a id="menu-outbox" class="" href="#" ><i class="fa fa-money"></i> Uit</a>
+	
+					</div>
+				</div>
+			</div>
+         </div>
+	
+	<script>
+	
+	$(document).ready(function() {
+		$(".loading-action").click(function () {
+			if (!$(this).hasClass('donotblockscreen')) {
+				loading();
+			}
+		});
+	});
+	
+	$('#menu-outbox').click(function(){alert('Te betalen rekeningen inzien is nog niet beschikbaar. Betalingsverzoeken komen op dit moment alleen per email binnen.')});
+	
+	</script>
+		
 	</body>
 
 </html>

@@ -196,11 +196,8 @@ def overview(request):
     
     return render(request, 'paypal/overview.html', {'confirmed_bills': confirmed_bills, 'unconfirmed_bills': unconfirmed_bills})
 
-def privacy_policy(request):
-    return render(request, 'paypal/policies.html', {"content": ""})
-
-def user_agreement(request):
-    return render(request, 'paypal/policies.html', {"content": ""})
+def policies(request):
+    return render(request, 'paypal/policies.html', {})
 
 def validate(request, paykey):
     return render(request, 'paypal/validate.html', {'paykey' : paykey})
@@ -398,6 +395,8 @@ def afterLogin(request):
 
 def login(request):
     
+#     return render(request, 'paypal/google_validation.html', {})
+    
     print('Starting point')
     
     if 'logout_url' not in request.session:
@@ -445,30 +444,6 @@ def payment_do(request):
 #     return render(request, 'paypal/payment_return.html', {'status': status})
     return HttpResponseRedirect(reverse('paypal:overview'))
 
-def test(request):
-    
-    subject, from_email, to = 'Nieuwe Samsamsam 2', 'Samsamsam <info@samsamsam.nl>', ['lauren.ten.hoor@philips.com', 'laurentenhoor@gmail.com', 'henknozemans@outlook.com']
-    text_content = 'Login op beta.samsamsam.nl om jouw rekening te betalen.'
-    
-    htmly = get_template('paypal/email_template_beta2.html')
-    d = Context({})
-    
-    html_content = htmly.render(d)
-    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-    msg.attach_alternative(html_content, "text/html")
-    
-    connection = mail.get_connection()
-    # Manually open the connection
-    connection.open()
-    # Send the two emails in a single call -
-    connection.send_messages([msg])
-    # The connection was already open so send_messages() doesn't close it.
-    # We need to manually close the connection.
-    connection.close()
-    
-    return render(request, 'paypal/email_template_beta2.html', {})  
-    
-    
     
 def createTransactions(request, bill):
     
@@ -525,6 +500,7 @@ def return_email(request, transaction_hash):
     bill = transaction.bill
 
     request.session['email'] = transaction.user.email
+    print('Email opened: ' + bill.description + ' (' + transaction.user.email + ')')
     
     if transaction.status == 'Paid':
         return HttpResponseRedirect(reverse('paypal:overview'))
@@ -538,7 +514,8 @@ def return_email(request, transaction_hash):
         paykey = transaction.paykey
     
     cgi = 'https://www.paypal.com/cgi-bin/webscr?cmd=_ap-payment&paykey='
-#     webapps = 'https://www.paypal.com/webapps/adaptivepayment/flow/pay?paykey='    
+    #webapps = 'https://www.paypal.com/webapps/adaptivepayment/flow/pay?paykey='    
+    #webapps = 'https://www.paypal.com/webapps/adaptivepayment/flow/pay?expType=mini&paykey='
     return HttpResponseRedirect(cgi+paykey)
           
           
@@ -557,7 +534,6 @@ def return_personal_payment(request, transaction_hash):
     return HttpResponseRedirect('/')
 
 
-        
 def createPersonalPaymentKey(receiver, amount, description, transaction_hash):
     
     paypal_api = "Pay";
@@ -616,16 +592,18 @@ def createPersonalPaymentKey(receiver, amount, description, transaction_hash):
     response = requests.post(PAYPAL_PREFIX + paypal_api, data=json.dumps(paypal_api_content), headers=PAYPAL_HEADERS)
     data = response.json()
     
-    print(response)
-    print(data)
+    paykey = data['payKey']
     
-    return data['payKey']
+    print('Paykey Generated: ' + paykey)
+    
+    return paykey
     
     
 def cancel_payment(request):
     print('Cancelled Payment' + request.body)
     return HttpResponse(json.dumps({"id": 'this is me!'}), content_type="application/json")
-    
+
+
 def login_return(request):
     
     authCode = request.GET.get('code', '')
@@ -677,7 +655,7 @@ def getStatus(paykey=''):
     
     if paykey== '':
         paykey = "AP-4DE159689U7357042"
-        
+    
     paypal_api_content = {
         "payKey" : paykey,
         "requestEnvelope" : {
@@ -706,4 +684,14 @@ def paypal_return(request):
     print(received_json_data)
     
     return HttpResponseRedirect('/')
+
+
+def payments(request):
+    
+    request.session['email'] = 'laurentenhoor@gmail.com'
+    paykey = createPersonalPaymentKey('henknozemans@outlook.com', 0.01, 'Test', '')
+#     webapps = 'https://www.paypal.com/webapps/adaptivepayment/flow/pay?paykey='
+    webapps = 'https://www.paypal.com/webapps/adaptivepayment/flow/pay?expType=mini&paykey='
+#     return HttpResponseRedirect(webapps+paykey)
+    return render(request, 'paypal/payments.html', {"paykey": paykey})
     
