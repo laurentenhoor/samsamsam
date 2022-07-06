@@ -15,7 +15,7 @@ django-static-precompiler==0.9
 gyp==0.1
 html5lib==0.999
 kombu==3.0.26
-lxml==3.3.3
+lxml==4.9.1
 mod-python==3.3.1
 mod-wsgi==4.4.13
 mod-wsgi-httpd==2.4.12.6
