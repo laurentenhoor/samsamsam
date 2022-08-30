@@ -17,7 +17,7 @@ html5lib==0.999
 kombu==3.0.26
 lxml==3.3.3
 mod-python==3.3.1
-mod-wsgi==4.4.13
+mod-wsgi==4.9.3
 mod-wsgi-httpd==2.4.12.6
 ndg-httpsclient==0.4.0
 paypalrestsdk==1.10.0
